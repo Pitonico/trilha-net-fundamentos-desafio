@@ -6,12 +6,20 @@ Console.OutputEncoding = System.Text.Encoding.UTF8;
 decimal precoInicial = 0;
 decimal precoPorHora = 0;
 
-Console.WriteLine("Seja bem vindo ao sistema de estacionamento!\n" +
-                  "Digite o preço inicial:");
-precoInicial = Convert.ToDecimal(Console.ReadLine());
-
-Console.WriteLine("Agora digite o preço por hora:");
-precoPorHora = Convert.ToDecimal(Console.ReadLine());
+try
+{
+    // Solicita o valor da tarifa inicial
+    Console.Write("Digite o preço inicial (R$): ");
+    precoInicial = decimal.Parse(Console.ReadLine());
+    // Solicita o valor da tarifa por hora
+    Console.Write("Digite o preço por hora (R$): ");
+    precoPorHora = decimal.Parse(Console.ReadLine());
+}
+catch (FormatException)
+{
+    Console.WriteLine("Ocorreu um erro ao ler os preços. Informe o valor certo");
+    return;
+}
 
 // Instancia a classe Estacionamento, já com os valores obtidos anteriormente
 Estacionamento es = new Estacionamento(precoInicial, precoPorHora);
@@ -23,11 +31,12 @@ bool exibirMenu = true;
 while (exibirMenu)
 {
     Console.Clear();
-    Console.WriteLine("Digite a sua opção:");
+    Console.WriteLine("---| Sistema de Estacionamento |---");  
     Console.WriteLine("1 - Cadastrar veículo");
     Console.WriteLine("2 - Remover veículo");
     Console.WriteLine("3 - Listar veículos");
     Console.WriteLine("4 - Encerrar");
+    Console.Write("Digite a sua opção: ");
 
     switch (Console.ReadLine())
     {
@@ -52,7 +61,7 @@ while (exibirMenu)
             break;
     }
 
-    Console.WriteLine("Pressione uma tecla para continuar");
+    Console.WriteLine("Pressione uma tecla para continuar...");
     Console.ReadLine();
 }
 

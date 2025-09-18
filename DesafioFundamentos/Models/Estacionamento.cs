@@ -1,3 +1,6 @@
+using System.Globalization;
+using System.Text.RegularExpressions;
+
 namespace DesafioFundamentos.Models
 {
     public class Estacionamento
@@ -14,34 +17,53 @@ namespace DesafioFundamentos.Models
 
         public void AdicionarVeiculo()
         {
-            // TODO: Pedir para o usuário digitar uma placa (ReadLine) e adicionar na lista "veiculos"
-            // *IMPLEMENTE AQUI*
-            Console.WriteLine("Digite a placa do veículo para estacionar:");
+            Console.Write("Digite a placa do veículo para estacionar: ");
+            string placaVeiculo = Console.ReadLine().ToUpper();
+
+            // Verifica se a placa do veículo é válida
+            if (!EhPlacaValida(placaVeiculo))
+            {
+                Console.WriteLine("Placa inválida. Tente novamente.");
+                return;
+            }
+
+            // Verifica se o veículo existe
+            if (ExistePlacaVeiculo(placaVeiculo))
+            {
+                Console.WriteLine("Veículo já está estacionado.");
+                return;
+            }
+
+            veiculos.Add(placaVeiculo);
+            Console.WriteLine("Veículo adicionado.");
         }
 
         public void RemoverVeiculo()
         {
-            Console.WriteLine("Digite a placa do veículo para remover:");
-
-            // Pedir para o usuário digitar a placa e armazenar na variável placa
-            // *IMPLEMENTE AQUI*
-            string placa = "";
+            Console.Write("Digite a placa do veículo para remover: ");
+            string placaVeiculo = Console.ReadLine().ToUpper();
 
             // Verifica se o veículo existe
-            if (veiculos.Any(x => x.ToUpper() == placa.ToUpper()))
+            if (ExistePlacaVeiculo(placaVeiculo))
             {
-                Console.WriteLine("Digite a quantidade de horas que o veículo permaneceu estacionado:");
 
-                // TODO: Pedir para o usuário digitar a quantidade de horas que o veículo permaneceu estacionado,
-                // TODO: Realizar o seguinte cálculo: "precoInicial + precoPorHora * horas" para a variável valorTotal                
-                // *IMPLEMENTE AQUI*
-                int horas = 0;
-                decimal valorTotal = 0; 
+                Console.Write("Digite a quantidade de horas que o veículo permaneceu estacionado: ");
+                string entrada = Console.ReadLine();
+                
+                try
+                {
+                    int quantidadeHorasEstacionado = entrada != string.Empty ? int.Parse(entrada) : 0;
 
-                // TODO: Remover a placa digitada da lista de veículos
-                // *IMPLEMENTE AQUI*
+                    decimal valorTotal = precoInicial + precoPorHora * quantidadeHorasEstacionado;
 
-                Console.WriteLine($"O veículo {placa} foi removido e o preço total foi de: R$ {valorTotal}");
+                    veiculos.Remove(placaVeiculo);
+
+                    Console.WriteLine($"O veículo {placaVeiculo} foi removido e o preço total foi de: {valorTotal.ToString("C", new CultureInfo("pt-BR"))}");
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Entrada não valida");
+                }
             }
             else
             {
@@ -55,13 +77,27 @@ namespace DesafioFundamentos.Models
             if (veiculos.Any())
             {
                 Console.WriteLine("Os veículos estacionados são:");
-                // TODO: Realizar um laço de repetição, exibindo os veículos estacionados
-                // *IMPLEMENTE AQUI*
+                veiculos.ForEach(Console.WriteLine);
             }
             else
             {
                 Console.WriteLine("Não há veículos estacionados.");
             }
+        }
+
+        private bool EhPlacaValida(string placaVeiculo)
+        {
+            string placaAntiga = @"^[A-Z]{3}-[0-9]{4}$";
+            string placaMercosul = @"^[A-Z]{3}[0-9]{1}[a-zA-Z]{1}[0-9]{2}$";
+
+            bool ehValida = Regex.IsMatch(placaVeiculo, placaAntiga) || Regex.IsMatch(placaVeiculo, placaMercosul);
+            
+            return ehValida;
+        }
+
+        private bool ExistePlacaVeiculo(string placaVeiculo)
+        {
+            return veiculos.Any(placaVeiculoCadastrada => placaVeiculoCadastrada == placaVeiculo);
         }
     }
 }
