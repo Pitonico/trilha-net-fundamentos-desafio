@@ -3,66 +3,76 @@
 // Coloca o encoding para UTF8 para exibir acentuação
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-decimal precoInicial = 0;
-decimal precoPorHora = 0;
+Console.WriteLine("---| Sistema de Estacionamento |---");
 
-try
+decimal precoInicial = LerDecimal("Digite o preço inicial (R$): ");
+decimal precoPorHora = LerDecimal("Digite o preço por hora (R$): ");
+
+Estacionamento(new Estacionamento(precoInicial, precoPorHora));
+
+static decimal LerDecimal(string mensagem)
 {
-    // Solicita o valor da tarifa inicial
-    Console.Write("Digite o preço inicial (R$): ");
-    precoInicial = decimal.Parse(Console.ReadLine());
-    // Solicita o valor da tarifa por hora
-    Console.Write("Digite o preço por hora (R$): ");
-    precoPorHora = decimal.Parse(Console.ReadLine());
-}
-catch (FormatException)
-{
-    Console.WriteLine("Ocorreu um erro ao ler os preços. Informe o valor certo");
-    return;
-}
-
-// Instancia a classe Estacionamento, já com os valores obtidos anteriormente
-Estacionamento es = new Estacionamento(precoInicial, precoPorHora);
-
-string opcao = string.Empty;
-bool exibirMenu = true;
-
-// Realiza o loop do menu
-while (exibirMenu)
-{
-    Console.Clear();
-    Console.WriteLine("---| Sistema de Estacionamento |---");  
-    Console.WriteLine("1 - Cadastrar veículo");
-    Console.WriteLine("2 - Remover veículo");
-    Console.WriteLine("3 - Listar veículos");
-    Console.WriteLine("4 - Encerrar");
-    Console.Write("Digite a sua opção: ");
-
-    switch (Console.ReadLine())
+    while (true)
     {
-        case "1":
-            es.AdicionarVeiculo();
-            break;
+        Console.Clear();
+        Console.WriteLine("---| Sistema de Estacionamento |---");
+        Console.Write(mensagem);
+        if (decimal.TryParse(Console.ReadLine(), out decimal valor))
+        {
+            return valor;
+        }
+        Console.WriteLine("Valor inválido. Tente novamente.");
+        Console.Write("Pressione uma tecla para tentar novamente...");
+        Console.ReadLine();
+    }
+}
 
-        case "2":
-            es.RemoverVeiculo();
-            break;
+static void Estacionamento(Estacionamento estacionamento)
+{
+    Estacionamento es = estacionamento;
 
-        case "3":
-            es.ListarVeiculos();
-            break;
+    bool exibirMenu = true;
 
-        case "4":
-            exibirMenu = false;
-            break;
+    // Realiza o loop do menu
+    while (exibirMenu)
+    {
+        Console.Clear();
+        Console.WriteLine("---| Sistema de Estacionamento |---");
+        Console.WriteLine("1 - Cadastrar veículo");
+        Console.WriteLine("2 - Remover veículo");
+        Console.WriteLine("3 - Listar veículos");
+        Console.WriteLine("4 - Encerrar");
+        Console.Write("Digite a sua opção: ");
 
-        default:
-            Console.WriteLine("Opção inválida");
-            break;
+        switch (Console.ReadLine())
+        {
+            case "1":
+                es.AdicionarVeiculo();
+                break;
+
+            case "2":
+                es.RemoverVeiculo();
+                break;
+
+            case "3":
+                es.ListarVeiculos();
+                break;
+
+            case "4":
+                exibirMenu = false;
+                break;
+
+            default:
+                Console.WriteLine("Opção inválida");
+                break;
+        }
+
+        if(exibirMenu)
+        {
+            Console.Write("Pressione uma tecla para continuar...");
+            Console.ReadLine();
+        }
     }
 
-    Console.WriteLine("Pressione uma tecla para continuar...");
-    Console.ReadLine();
+    Console.WriteLine("O programa se encerrou");
 }
-
-Console.WriteLine("O programa se encerrou");
